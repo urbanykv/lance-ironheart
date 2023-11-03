@@ -13,8 +13,8 @@ const state = {
 };
 
 let engine = undefined;
-let verificarEngine = false;
 let randomInterval = undefined;
+
 state.value.audioJump.volume = 0.3;
 state.value.audioJump.playbackRate = 1.05;
 
@@ -36,7 +36,7 @@ let jump = () => (document.addEventListener('keydown', event => {
 ))
 
 let geradorObstaculos = (randomInterval) => {
-    randomInterval = Math.floor(Math.random() * (2501 - 2000) + 2000)
+    
     let geradorInterval = setInterval(() => {const randomNum = Math.floor(Math.random() * 3);
 
     let obstaculoGerado = document.createElement('div');
@@ -49,6 +49,8 @@ let geradorObstaculos = (randomInterval) => {
 
     state.view.jogo.appendChild(obstaculoGerado);
 
+    randomInterval = Math.floor(Math.random() * (2501 - 2000) + 2000);
+    
     setTimeout(() => {state.view.jogo.removeChild(obstaculoGerado)}, 2500)}, randomInterval);
 }
 
@@ -68,26 +70,18 @@ const impacto = (obstaculo, intervalGerador) => {
 
 let start = () => {
     state.view.btnStart.addEventListener('click', () => {
-        verificarEngine = false;
-        console.log(verificarEngine);
-        if(!verificarEngine){
             engine = () => { 
                 jump();
                 geradorObstaculos(randomInterval);
             }
             engine();
             state.view.telaStart.style.display = "none"
-        }
+    
     })
 }
 
 let gameOver = () => {
     state.view.telaStart.style.display = "flex"
-    verificarEngine = true;
-    console.log(verificarEngine);
-    if(verificarEngine){
-        engine = undefined;
-    }
 }
 
 start();
