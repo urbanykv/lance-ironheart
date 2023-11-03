@@ -12,7 +12,9 @@ const state = {
     }
 };
 
-let engine = () => {};
+let engine = undefined;
+
+let verificarEngine = false;
 
 state.value.audioJump.volume = 0.3;
 state.value.audioJump.playbackRate = 1.05;
@@ -35,39 +37,55 @@ let jump = () => (document.addEventListener('keydown', event => {
 ))
 
 let geradorObstaculos = () => {
-    setInterval(() => {const randomNum = Math.floor(Math.random() * 3);
+    let geradorInterval = setInterval(() => {const randomNum = Math.floor(Math.random() * 3);
 
     let obstaculoGerado = document.createElement('div');
 
-    obstaculoGerado.setAttribute("class", `obs${randomNum}`)
+    obstaculoGerado.setAttribute("class", `obs${randomNum}`);
 
-    impacto(obstaculoGerado)
+    impacto(obstaculoGerado, geradorInterval);
 
-    state.view.jogo.appendChild(obstaculoGerado)
+    state.view.jogo.appendChild(obstaculoGerado);
 
-    setTimeout(() => {state.view.jogo.removeChild(obstaculoGerado)}, 2500)}, 2500)
+    setTimeout(() => {state.view.jogo.removeChild(obstaculoGerado)}, 2500)}, 2500);
 }
 
-const impacto = obstaculo => {
+const impacto = (obstaculo, intervalGerador) => {
     setInterval(() => {
     const obstaculoPosition = obstaculo.offsetLeft;
-    const jogadorBottom = +window.getComputedStyle(state.view.jogador).bottom.replace('px', '')
+    const jogadorBottom = +window.getComputedStyle(state.view.jogador).bottom.replace('px', '');
 
     if(obstaculoPosition <= 170 && obstaculoPosition > 0 && jogadorBottom < 30){
-        obstaculo.style.animation = "none"
-        obstaculo.style.left = `${obstaculoPosition}px`
+        obstaculo.style.animation = "none";
+        obstaculo.style.left = `${obstaculoPosition}px`;
+        clearInterval(intervalGerador);
+        gameOver();
+        state.value.bloqueioJump = true;
     }}, 95)
 }
 
 let start = () => {
     state.view.btnStart.addEventListener('click', () => {
-        engine = () => { 
-            jump();
-            geradorObstaculos();
+        verificarEngine = false;
+        console.log(verificarEngine);
+        if(!verificarEngine){
+            engine = () => { 
+                jump();
+                geradorObstaculos();
+            }
+            engine();
+            state.view.telaStart.style.display = "none"
         }
-        engine();
-        state.view.telaStart.style.display = "none"
     })
+}
+
+let gameOver = () => {
+    state.view.telaStart.style.display = "flex"
+    verificarEngine = true;
+    console.log(verificarEngine);
+    if(verificarEngine){
+        engine = undefined;
+    }
 }
 
 start();
