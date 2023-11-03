@@ -13,9 +13,8 @@ const state = {
 };
 
 let engine = undefined;
-
 let verificarEngine = false;
-
+let randomInterval = undefined;
 state.value.audioJump.volume = 0.3;
 state.value.audioJump.playbackRate = 1.05;
 
@@ -36,10 +35,13 @@ let jump = () => (document.addEventListener('keydown', event => {
     }}
 ))
 
-let geradorObstaculos = () => {
+let geradorObstaculos = (randomInterval) => {
+    randomInterval = Math.floor(Math.random() * (2501 - 2000) + 2000)
     let geradorInterval = setInterval(() => {const randomNum = Math.floor(Math.random() * 3);
 
     let obstaculoGerado = document.createElement('div');
+    
+    console.log(randomInterval);
 
     obstaculoGerado.setAttribute("class", `obs${randomNum}`);
 
@@ -47,7 +49,7 @@ let geradorObstaculos = () => {
 
     state.view.jogo.appendChild(obstaculoGerado);
 
-    setTimeout(() => {state.view.jogo.removeChild(obstaculoGerado)}, 2500)}, 2500);
+    setTimeout(() => {state.view.jogo.removeChild(obstaculoGerado)}, 2500)}, randomInterval);
 }
 
 const impacto = (obstaculo, intervalGerador) => {
@@ -55,7 +57,7 @@ const impacto = (obstaculo, intervalGerador) => {
     const obstaculoPosition = obstaculo.offsetLeft;
     const jogadorBottom = +window.getComputedStyle(state.view.jogador).bottom.replace('px', '');
 
-    if(obstaculoPosition <= 170 && obstaculoPosition > 0 && jogadorBottom < 30){
+    if(obstaculoPosition <= 170 && obstaculoPosition > 0 && jogadorBottom < 25){
         obstaculo.style.animation = "none";
         obstaculo.style.left = `${obstaculoPosition}px`;
         clearInterval(intervalGerador);
@@ -71,7 +73,7 @@ let start = () => {
         if(!verificarEngine){
             engine = () => { 
                 jump();
-                geradorObstaculos();
+                geradorObstaculos(randomInterval);
             }
             engine();
             state.view.telaStart.style.display = "none"
