@@ -76,7 +76,6 @@ let start = () => {
             }
             engine();
             state.view.telaStart.style.display = "none"
-    
     })
 }
 
