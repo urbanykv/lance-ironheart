@@ -13,11 +13,12 @@ const state = {
 };
 
 let engine = undefined;
-let randomInterval = undefined;
+let randomInterval = 2500;
+let bloqueioIntervalo = true;
+console.log(bloqueioIntervalo);
 
 state.value.audioJump.volume = 0.3;
 state.value.audioJump.playbackRate = 1.05;
-
 
 let jump = () => (document.addEventListener('keydown', event => {
     if(event.key === "ArrowUp" || event.key === "w" || event.key === "W" || event.key === " "){
@@ -35,23 +36,35 @@ let jump = () => (document.addEventListener('keydown', event => {
     }}
 ))
 
+let geradorDeIntervalos = () => {
+    return(Math.floor(Math.random() * (2501 - 1000) + 1000))
+}
+
+let randomNum = geradorDeIntervalos()
+
 let geradorObstaculos = (randomInterval) => {
     
     let geradorInterval = setInterval(() => {const randomNum = Math.floor(Math.random() * 3);
 
     let obstaculoGerado = document.createElement('div');
     
-    console.log(randomInterval);
+    bloqueioIntervalo = false;
+
+    if(!bloqueioIntervalo){
+        geradorDeIntervalos()
+        console.log(randomInterval);
+    }
 
     obstaculoGerado.setAttribute("class", `obs${randomNum}`);
 
     impacto(obstaculoGerado, geradorInterval);
 
     state.view.jogo.appendChild(obstaculoGerado);
-
-    randomInterval = Math.floor(Math.random() * (2501 - 2000) + 2000);
     
-    setTimeout(() => {state.view.jogo.removeChild(obstaculoGerado)}, 2500)}, randomInterval);
+    setTimeout(() => {
+        bloqueioIntervalo = true;
+        console.log(bloqueioIntervalo);
+        state.view.jogo.removeChild(obstaculoGerado)}, 2500)}, randomInterval);
 }
 
 const impacto = (obstaculo, intervalGerador) => {
@@ -72,7 +85,7 @@ let start = () => {
     state.view.btnStart.addEventListener('click', () => {
             engine = () => { 
                 jump();
-                geradorObstaculos(randomInterval);
+                geradorObstaculos(randomNum);
             }
             engine();
             state.view.telaStart.style.display = "none"
