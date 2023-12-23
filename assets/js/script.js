@@ -28,7 +28,7 @@ let jump = () => (document.addEventListener('keydown', event => {
 
             jogador.classList.add("jump");
             setTimeout(() => {jogador.classList.remove("jump")}, 650)
-            jogador.style.bottom = "none"
+            jogador.style.bottom = "none";
             state.value.bloqueioJump = false;
 
             setTimeout(() => {state.value.bloqueioJump = true;}, 700)
@@ -37,10 +37,14 @@ let jump = () => (document.addEventListener('keydown', event => {
 ))
 
 let geradorDeIntervalos = () => {
-    return(Math.floor(Math.random() * (2501 - 1000) + 1000))
+    let intervaloGerado = Math.floor(Math.random() * (2501 - 1000) + 1000);
+
+    return(intervaloGerado);
 }
 
-let randomNum = geradorDeIntervalos()
+let randomNum = geradorDeIntervalos();
+
+console.log(randomNum);
 
 let geradorObstaculos = (randomInterval) => {
     
@@ -48,11 +52,10 @@ let geradorObstaculos = (randomInterval) => {
 
     let obstaculoGerado = document.createElement('div');
     
-    bloqueioIntervalo = false;
-
-    if(!bloqueioIntervalo){
-        geradorDeIntervalos()
+    if(bloqueioIntervalo){
+        randomInterval = geradorDeIntervalos();
         console.log(randomInterval);
+        bloqueioIntervalo = false;
     }
 
     obstaculoGerado.setAttribute("class", `obs${randomNum}`);
@@ -64,7 +67,7 @@ let geradorObstaculos = (randomInterval) => {
     setTimeout(() => {
         bloqueioIntervalo = true;
         console.log(bloqueioIntervalo);
-        state.view.jogo.removeChild(obstaculoGerado)}, 2500)}, randomInterval);
+        state.view.jogo.removeChild(obstaculoGerado)}, 2500)}, randomInterval = randomInterval);
 }
 
 const impacto = (obstaculo, intervalGerador) => {
